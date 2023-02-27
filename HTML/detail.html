@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/detail.css">
+</head>
+<body>
+    <div class="container">
+        <div id="content">
+            <!-- <div class="header">
+                <h1>Harry Potter and the Sorcerer's Stone™</h1>
+                <p>
+                    An orphaned boy enrolls in a school of wizardry, where he learns the truth about himself, his family and the terrible evil that haunts the magical world.
+                </p>
+            </div>
+            <div class="category">
+                <h1>1</h1>
+            </div>
+            <div class="book-image">
+                <img src="images/harry-p1.jpg" alt="">
+            </div> -->
+        </div>
+    </div>
+    <script>
+        const content = document.getElementById("content");
+        const value = window.location.search;
+
+        const paramLink = new URLSearchParams(value);
+        const id = paramLink.get("id");
+        
+            fetch(`https://jsonplaceholder.typicode.com/photos/${id}`)
+            .then(async (res) => {
+               const data = await res.json();
+               content.innerHTML += `
+                <div class="header">
+                    <h1>${data["title"]}</h1>
+                    <p>
+                        ${data["title"]}
+                    </p>
+                </div>
+                <div class="category">
+                    <h1>${data["id"]}</h1>
+                </div>
+                <div class="book-image">
+                    <img src="${data["thumbnailUrl"]}" alt="">
+                </div>
+                `;
+            }).catch((err) => {
+                console.log(err);
+            })
+    </script>
+</body>
+</html>
