@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP05.3: Nationality Guessing</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Open+Sans&family=Permanent+Marker&family=Roboto+Condensed:wght@300&display=swap');
+        *{
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+        body{
+            width: 80%;
+            height: 100vh;
+            border: 5px solid black;
+            margin: 0px auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .container{
+            width: 60%;
+            height: 100%;
+            /* background-color: blueviolet; */
+            margin: 0px auto;
+        }
+        h1{
+            font-size: 80px;
+            padding-top: 20px;
+        }
+        h2{
+            font-size: 35px;
+            color: black;
+            font-family: 'IM Fell English SC', serif;
+        }
+        b{
+            font-size: 35px;
+            color: blueviolet;
+            font-family: 'IM Fell English SC', serif;
+        }
+        .search{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* background-color: black; */
+            width: 40%;
+            margin: 0px auto;
+        }
+        input{
+            width: 160px;
+            height: 30px;
+            border: 3px solid gray;
+            border-radius: 5px;
+            padding: 0px 20px;
+            margin: 0px auto;
+        }
+        button{
+            width: 100px;
+            height: 30px;
+            border: 3px solid gray;
+            border-radius: 5px;
+            background-color: blueviolet;
+            margin: 0px auto;
+            color: white;
+            cursor: pointer;
+            transition: 0.4s;
+        }
+        button:hover{
+            background-color: grey;
+        }
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 5px auto;
+            }
+            .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border: 8px solid #ffffff;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #fff transparent transparent transparent;
+            }
+            .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+            }
+            .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+            }
+            .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+            }
+            @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .loading{
+            background-color: rgb(43, 171, 226);
+        }
+        .result{
+            width: 70%;
+            height: 250px;
+            /* background-color: grey; */
+            border: 0px solid black;
+            border-radius: 5px ;
+            margin: 5px auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .Name h2{
+            font-size: 30px;
+            margin-top: 20px;
+        }
+        .Gender h2{
+            font-size: 40px;
+            color: orange;
+            margin-top: 20px;
+        }
+        .Probability h2{
+            color: blueviolet;
+            margin-top: 10px;
+        }
+        .country{
+            display: flex;
+            justify-content: space-between;
+            border: 3px solid grey;
+            border-radius: 5px;
+            font-family: 'IM Fell English SC', serif;
+            font-size: 25px;
+            font-weight: bold;
+            color: blueviolet;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><h1>🌎</h1></center>
+        <center><h2>I Know you <b>Home</b></h2></center>
+        <div class="search">
+            <form action="#" onsubmit="getData()">
+                <input type="text" placeholder="Tell me your name" id="username">
+                <button id="btn-submit" type="submit">Guess</button>
+            </form>
+        </div>
+        <div style="margin: 0px auto; margin-left: 300px;" id="loadingtext" hidden>
+            <div  class="lds-ring">
+                <div class="loading"></div>
+            </div>
+        </div>
+        <div class="result">
+            <!-- <div id="name" class="name"><center><h2>Rith</h2></center></div>
+            <div class="country">
+                <p>KH</p>
+                <p>90%</p>
+            </div> -->
+        </div>
+    </div>
+</body>
+    <script>
+        const result = document.getElementById("result");
+        const loadingTextEle  = document.getElementById("loadingtext");
+        const nameTextEle        = document.getElementById("username");
+        const countryIdTextEle      = document.getElementById("country_id");
+        const probabilityTextEle = document.getElementById("probability");
+        function getData(){
+            loadingTextEle.hidden = false;
+            document.querySelector(".result").hidden = true;
+            var url = " https://api.nationalize.io/?name=" +`${username.value}`;
+            fetch(url) .then(async(res)=>{
+                const data = await res.json()
+                loadingTextEle.hidden = true;
+                let tmp = "";
+                let nam = `
+                    <div id="name" class="Name"><center><h2>${data.name}</h2></center></div>
+                    `
+                for(let i = 0 ; data.country.length > i ; i++){
+                    tmp +=`
+                        <div class="country">
+                            <p>${data.country[i].country_id}</p>
+                            <p>${((data.country[i].probability)*100).toFixed(2)}%</p>
+                        </div>
+                    `
+                }
+                document.querySelector(".result").innerHTML = nam;
+                document.querySelector(".result").innerHTML = tmp;
+                document.querySelector(".result").hidden = false;
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        }
+    </script>
+</html>

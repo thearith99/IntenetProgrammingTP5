@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP05.4: University List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Open+Sans&family=Permanent+Marker&family=Roboto+Condensed:wght@300&display=swap');
+        *{
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+        body{
+            width: 80%;
+            /* height: 100vh; */
+            border: 5px solid black;
+            margin: 0px auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .container{
+            width: 80%;
+            /* height: 100%; */
+            /* background-color: blueviolet; */
+            margin: 0px auto;
+        }
+        h1{
+            font-size: 80px;
+            padding-top: 25px;
+        }
+        h2{
+            font-size: 30px;
+            font-family: 'IM Fell English SC', serif;
+            font-weight: bold;
+            color: black;
+        }
+        .sele{
+            width: 50%;
+            height: 40px;
+            border: 2px solid gray;
+            border-radius: 4px;
+            margin: 10px auto;
+        }
+        .sele select{
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: 0.4s;
+        }
+        .sele select:hover{
+            background-color:grey;
+            color: white;
+        }
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 5px auto;
+            }
+            .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border: 8px solid #ffffff;
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #fff transparent transparent transparent;
+            }
+            .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+            }
+            .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+            }
+            .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+            }
+            @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .loading{
+            background-color: rgb(43, 171, 226);
+        }
+        .result{
+            width: 100%;
+            /* height: 100vh; */
+            /* background-color: blueviolet; */
+            display: flex;
+            justify-content: space-between;
+            /* align-items: center; */
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .result-item{
+            background-color: rgba(240, 235, 235, 0.8);
+            border: 3px solid rgb(210, 206, 206);
+            border-radius: 5px;
+            font-size: 30px;
+            text-align: center;
+            width: 250px;
+            padding: 20px 0;
+        }
+        h3{
+            padding-top: 10px;
+            font-size: 20px;
+            font-family: 'IM Fell English SC', serif;
+        }
+        h4{
+            font-size: 18px;
+            font-family: 'IM Fell English SC', serif;
+            font-weight: bold;
+            color: grey;
+            padding: 5px 0px;
+        }
+        h5{
+            font-size: 15px;
+            color: blueviolet;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center><h1>🏫</h1></center>
+        <center><h2>Which Univ. Do you want to study?</h2></center>
+        <div class="sele">
+            <select name="choose" id="choose" onchange="getData()">
+                <option selected value="Cambodia">Cambodia</option>
+                <option value="Thailand">Thailand</option>
+                <option value="USA">USA</option>
+                <option value="Laos">Laos</option>
+            </select>
+        </div>
+        <div style="margin: 0px auto; margin-left: 300px;" id="loadingtext" hidden>
+            <div  class="lds-ring">
+                <div class="loading"></div>
+            </div>
+        </div>
+        <div class="result">
+            <!-- <div class="result-item">
+                <h3>
+                    Asia Europe Univercity
+                </h3>
+                <h4>
+                    (Cambodia-KH)
+                </h4>
+                <h5>
+                    <i class="fa-solid fa-earth-americas"></i>https://api.nationalize.io/?name
+                </h5>
+            </div>
+            <div class="result-item">
+                <h3>
+                    Asia Europe Univercity
+                </h3>
+                <h4>
+                    (Cambodia-KH)
+                </h4>
+                <h5>
+                    <i class="fa-solid fa-earth-americas"></i>https://api.nationalize.io/?name
+                </h5>
+            </div>
+            <div class="result-item">
+                <h3>
+                    Asia Europe Univercity
+                </h3>
+                <h4>
+                    (Cambodia-KH)
+                </h4>
+                <h5>
+                    <i class="fa-solid fa-earth-americas"></i>https://api.nationalize.io/?name
+                </h5>
+            </div> -->
+        </div>
+    </div>
+</body>
+<script>
+    const result = document.getElementById("result");
+    const chose = document.getElementById("choose");
+    const loadingTextEle  = document.getElementById("loadingtext");
+
+    getData();
+    
+    function getData(){
+        loadingTextEle.hidden = false;
+        document.querySelector(".result").hidden = true;
+        var url = `http://universities.hipolabs.com/search?country=${choose.value}`;
+        fetch(url).then(async(res)=>{
+            const data = await res.json();
+            loadingTextEle.hidden = true;
+
+            let tmp = "";
+            for(let i=0 ; i<data.length; i++) {
+                tmp += `
+                <div class="result-item">
+                    <h3>
+                        ${data[i].name}
+                    </h3>
+                    <h4>
+                        (${data[i].country}-${data[i].alpha_two_code})
+                    </h4>
+                    <h5>
+                        <i class="fa-solid fa-earth-americas"></i>${data[i].web_pages}
+                    </h5>
+                </div>
+                `
+                document.querySelector(".result").innerHTML = tmp;
+                document.querySelector(".result").hidden = false;
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+</script>
+</html>
